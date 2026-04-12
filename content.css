@@ -1,0 +1,357 @@
+/* Etsy Message Assistant - Floating Panel */
+
+#ema-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 380px;
+  max-height: 500px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15), 0 1px 4px rgba(0, 0, 0, 0.08);
+  z-index: 99999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+#ema-panel.ema-collapsed {
+  max-height: 44px;
+  width: 220px;
+  cursor: pointer;
+}
+
+#ema-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #f56400;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+#ema-header:active {
+  cursor: grabbing;
+}
+
+#ema-header .ema-shop-badge {
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.85;
+  margin-left: 8px;
+}
+
+#ema-header .ema-toggle {
+  font-size: 16px;
+  opacity: 0.8;
+  transition: transform 0.2s;
+}
+
+#ema-panel.ema-collapsed #ema-header .ema-toggle {
+  transform: rotate(180deg);
+}
+
+#ema-body {
+  padding: 14px;
+  overflow-y: auto;
+  flex: 1;
+  max-height: 400px;
+}
+
+#ema-panel.ema-collapsed #ema-body {
+  display: none;
+}
+
+/* Loading state */
+#ema-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  color: #888;
+  font-size: 13px;
+}
+
+#ema-loading .ema-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #eee;
+  border-top-color: #f56400;
+  border-radius: 50%;
+  animation: ema-spin 0.6s linear infinite;
+}
+
+@keyframes ema-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Note for shop owner */
+#ema-note {
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #6d4c00;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+/* Confidence badge */
+.ema-confidence {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.ema-confidence.high {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.ema-confidence.medium {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.ema-confidence.low {
+  background: #fce4ec;
+  color: #c62828;
+}
+
+/* Response text */
+#ema-response {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #333;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background: #f8f8f8;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+/* Edit mode */
+#ema-response[contenteditable="true"] {
+  outline: none;
+  border-color: #f56400;
+  background: #fff;
+}
+
+/* Buttons */
+#ema-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+#ema-actions button {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+#ema-insert-btn {
+  background: #f56400;
+  color: #fff;
+}
+
+#ema-insert-btn:hover {
+  background: #d95800;
+}
+
+#ema-copy-btn {
+  background: #f0f0f0;
+  color: #444;
+}
+
+#ema-copy-btn:hover {
+  background: #e0e0e0;
+}
+
+#ema-edit-btn {
+  background: #f0f0f0;
+  color: #444;
+}
+
+#ema-edit-btn:hover {
+  background: #e0e0e0;
+}
+
+#ema-refresh-btn {
+  background: #f0f0f0;
+  color: #444;
+  flex: 0;
+  padding: 8px 10px;
+}
+
+#ema-refresh-btn:hover {
+  background: #e0e0e0;
+}
+
+#ema-alt-btn {
+  background: #e3f2fd;
+  color: #1565c0;
+  flex: 0;
+  padding: 8px 10px;
+}
+
+#ema-alt-btn:hover {
+  background: #bbdefb;
+}
+
+/* Type badge */
+.ema-type-badge {
+  display: inline-block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #e8e8e8;
+  color: #666;
+  margin-left: 6px;
+}
+
+/* Error state */
+#ema-error {
+  color: #c62828;
+  font-size: 13px;
+  padding: 12px 0;
+  line-height: 1.4;
+}
+
+/* No message state */
+#ema-empty {
+  color: #888;
+  font-size: 13px;
+  padding: 12px 0;
+  text-align: center;
+}
+
+/* Input area */
+#ema-input-area {
+  margin-bottom: 10px;
+}
+
+#ema-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  min-height: 50px;
+  max-height: 120px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+#ema-input:focus {
+  border-color: #f56400;
+}
+
+#ema-btn-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+#ema-go-btn {
+  flex: 1;
+  padding: 8px;
+  background: #f56400;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#ema-go-btn:hover {
+  background: #d95800;
+}
+
+/* Quick dropdown menu */
+#ema-quick-menu {
+  position: relative;
+}
+
+#ema-quick-btn {
+  padding: 8px 12px;
+  background: #e8e8e8;
+  color: #555;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#ema-quick-btn:hover {
+  background: #ddd;
+}
+
+#ema-quick-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  min-width: 170px;
+  z-index: 100000;
+  overflow: hidden;
+}
+
+#ema-quick-dropdown.ema-show {
+  display: block;
+}
+
+.ema-quick-option {
+  padding: 9px 12px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.ema-quick-option:hover {
+  background: #f5f5f5;
+}
+
+.ema-quick-option:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}
+
+/* Result area */
+#ema-result-area {
+  /* empty by default */
+}
