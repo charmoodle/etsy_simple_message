@@ -1,0 +1,211 @@
+/* Etsy Review Request Assistant - Panel Styles */
+
+#ema-review-panel {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 285px;
+  max-height: 500px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15), 0 1px 4px rgba(0, 0, 0, 0.08);
+  z-index: 99999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+#ema-review-panel.ema-collapsed {
+  max-height: 44px;
+  width: 180px;
+  cursor: pointer;
+}
+
+#ema-review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #2e7d32;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+#ema-review-header:active {
+  cursor: grabbing;
+}
+
+#ema-review-header .ema-shop-badge {
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.85;
+  margin-left: 8px;
+}
+
+#ema-review-header .ema-toggle {
+  font-size: 16px;
+  opacity: 0.8;
+  transition: transform 0.2s;
+}
+
+#ema-review-panel.ema-collapsed #ema-review-header .ema-toggle {
+  transform: rotate(180deg);
+}
+
+#ema-review-body {
+  padding: 14px;
+  overflow-y: auto;
+  flex: 1;
+  max-height: 420px;
+}
+
+#ema-review-panel.ema-collapsed #ema-review-body {
+  display: none;
+}
+
+/* Product group selector */
+#ema-review-selector {
+  margin-bottom: 10px;
+}
+
+#ema-review-selector label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+#ema-group-select {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  background: #fff;
+  color: #333;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+#ema-group-select:focus {
+  border-color: #2e7d32;
+}
+
+#ema-auto-detect-status {
+  margin-top: 4px;
+  min-height: 20px;
+}
+
+/* Eligibility area */
+#ema-review-eligibility {
+  margin-bottom: 8px;
+}
+
+.ema-review-hint {
+  color: #888;
+  font-style: italic;
+  font-size: 12px;
+}
+
+.ema-review-detected {
+  background: #e8f5e9;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #2e7d32;
+}
+
+.ema-review-ok {
+  background: #e8f5e9;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #2e7d32;
+}
+
+.ema-review-warn {
+  background: #fff3e0;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #e65100;
+}
+
+/* Response text */
+#ema-review-response {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #333;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background: #f8f8f8;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#ema-review-response[contenteditable="true"] {
+  outline: none;
+  border-color: #2e7d32;
+  background: #fff;
+}
+
+/* Action buttons */
+#ema-review-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+#ema-review-actions button {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+#ema-review-insert-btn {
+  background: #2e7d32;
+  color: #fff;
+}
+
+#ema-review-insert-btn:hover {
+  background: #1b5e20;
+}
+
+#ema-review-copy-btn {
+  background: #f0f0f0;
+  color: #444;
+}
+
+#ema-review-copy-btn:hover {
+  background: #e0e0e0;
+}
+
+#ema-review-edit-btn {
+  background: #f0f0f0;
+  color: #444;
+}
+
+#ema-review-edit-btn:hover {
+  background: #e0e0e0;
+}

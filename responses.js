@@ -389,7 +389,7 @@ const RESPONSE_TEMPLATES = [
 const PRODUCT_GIFT_MAP = {
   charmoodle: [
     {
-      group: "digital_products_bundles",
+      group: "small_bundles",
       products: [
         "10+ Million Digital Products Bundle",
         "85 Million Digital Products Bundle",
@@ -433,7 +433,7 @@ const PRODUCT_GIFT_MAP = {
       gift_name: "500 Carousel Stickers"
     },
     {
-      group: "marketing_bundles",
+      group: "big_bundles",
       products: [
         "Faceless Digital Marketing Bundle MRR Products",
         "Digital Marketing Course Bundle with PLR & MRR",

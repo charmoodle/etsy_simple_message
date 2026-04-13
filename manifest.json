@@ -14,6 +14,18 @@
       "js": ["responses.js", "content.js"],
       "css": ["content.css"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.etsy.com/your/orders/sold/completed*"],
+      "js": ["responses.js", "review_request.js"],
+      "css": ["content.css", "review_request.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.etsy.com/shop/*"],
+      "js": ["responses.js", "gift_sender.js"],
+      "css": ["content.css", "gift_sender.css"],
+      "run_at": "document_idle"
     }
   ],
   "action": {

@@ -81,7 +81,7 @@
     panel.id = "ema-panel";
     panel.innerHTML = `
       <div id="ema-header">
-        <span>Message Assistant <span class="ema-shop-badge">${shopName}</span></span>
+        <span>1. Message Assistant <span class="ema-shop-badge">${shopName}</span></span>
         <span class="ema-toggle">▼</span>
       </div>
       <div id="ema-body">
@@ -95,6 +95,7 @@
                 <div class="ema-quick-option" data-action="clarify">Ask to Clarify</div>
                 <div class="ema-quick-option" data-action="drive">Drive Link</div>
                 <div class="ema-quick-option" data-action="noreview">No Review Reminder</div>
+                <div class="ema-quick-option" data-action="clicklink">Click Link in Screenshot</div>
               </div>
             </div>
           </div>
@@ -149,6 +150,14 @@
           showSuggestion({
             response: `Hi! I hope you're enjoying your order. Just a quick reminder — the free gift is sent after the 5-star review. You can leave it under your Etsy account → Purchases & Reviews → your order → Leave a Review. Once it's posted, let me know and I'll send your gift right away.`,
             confidence: "high", type: "template", matched_template: "no_review_reminder", note: null
+          }, "");
+        }
+
+        if (action === "clicklink") {
+          showSuggestion({
+            response: `Hi, please click the link shown in the screenshot to access your files. Thank you.`,
+            confidence: "high", type: "template", matched_template: "click_link_in_screenshot",
+            note: "Attach the screenshot manually using Etsy's attachment button"
           }, "");
         }
 
