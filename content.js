@@ -96,6 +96,7 @@
                 <div class="ema-quick-option" data-action="drive">Drive Link</div>
                 <div class="ema-quick-option" data-action="noreview">No Review Reminder</div>
                 <div class="ema-quick-option" data-action="clicklink">Click Link in Screenshot</div>
+                <div class="ema-quick-option" data-action="sendgift">Send Gift</div>
               </div>
             </div>
           </div>
@@ -151,6 +152,52 @@
             response: `Hi! I hope you're enjoying your order. Just a quick reminder — the free gift is sent after the 5-star review. You can leave it under your Etsy account → Purchases & Reviews → your order → Leave a Review. Once it's posted, let me know and I'll send your gift right away.`,
             confidence: "high", type: "template", matched_template: "no_review_reminder", note: null
           }, "");
+        }
+
+        if (action === "sendgift") {
+          const shopName = getShopName();
+          const productInfo = (getProductInfo() || "").toLowerCase();
+          const shopGiftMap = PRODUCT_GIFT_MAP[shopName] || [];
+          let matchedGroup = null;
+
+          // Check for multiple items
+          const multipleItemsMatch = productInfo.match(/(\d+)\s*items?/i);
+          const itemCount = multipleItemsMatch ? parseInt(multipleItemsMatch[1]) : 1;
+
+          if (shopName === "charmoodle" && itemCount > 1) {
+            matchedGroup = shopGiftMap.find(g => g.is_multiple_items_fallback);
+          } else {
+            for (const group of shopGiftMap) {
+              if (group.is_multiple_items_fallback) continue;
+              for (const prod of (group.products || [])) {
+                if (productInfo.includes(prod.toLowerCase().substring(0, 20))) {
+                  matchedGroup = group;
+                  break;
+                }
+              }
+              if (matchedGroup) break;
+              for (const kw of (group.keywords || [])) {
+                if (productInfo.includes(kw.toLowerCase())) {
+                  matchedGroup = group;
+                  break;
+                }
+              }
+              if (matchedGroup) break;
+            }
+          }
+
+          if (matchedGroup && matchedGroup.gift_message) {
+            showSuggestion({
+              response: matchedGroup.gift_message,
+              confidence: "high", type: "gift_send", matched_template: "quick_send_gift",
+              note: `Detected: ${matchedGroup.gift_name}. VERIFY: Check that the customer left a 5-star review before sending.`
+            }, "");
+          } else {
+            showSuggestion({
+              response: "", confidence: "low", type: "gift_send", matched_template: null,
+              note: "Could not detect product. Make sure Order History is expanded."
+            }, "");
+          }
         }
 
         if (action === "clicklink") {
