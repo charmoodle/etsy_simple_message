@@ -124,10 +124,10 @@
       status = "warn";
     }
 
-    // Check for guest checkout
-    if (/\bguest\b/i.test(detailText)) {
-      messages.push("Guest checkout — cannot leave reviews, skip!");
-      status = "warn";
+    // Check for guest checkout — shows "(Guest)" next to buyer name
+    if (/\(Guest\)/i.test(detailText)) {
+      messages.push("GUEST CHECKOUT — cannot leave reviews, skip this one!");
+      status = "guest";
     }
 
     if (detailText.includes("No messages about this order yet")) {
@@ -155,6 +155,7 @@
         <span class="ema-toggle">▼</span>
       </div>
       <div id="ema-review-body">
+        <div id="ema-review-reminder">Do not send to Guest Checkouts</div>
         <div id="ema-review-selector">
           <label for="ema-group-select">Product Group:</label>
           <select id="ema-group-select">
@@ -191,6 +192,11 @@
 
     // Insert button
     document.getElementById("ema-review-insert-btn").addEventListener("click", () => {
+      const detailText = getDetailPanelText() || "";
+      if (/\(Guest\)/i.test(detailText)) {
+        alert("GUEST CHECKOUT — this buyer cannot leave reviews. Skip this one.");
+        return;
+      }
       const text = document.getElementById("ema-review-response").textContent;
       insertIntoMessageBox(text);
     });
@@ -382,6 +388,11 @@
   // ── Auto-click "Message buyer" button only when it's a first message ──
   function autoClickMessageBuyer() {
     const detailText = getDetailPanelText() || "";
+
+    // Skip auto-click for guest checkouts — they can't leave reviews
+    if (/\(Guest\)/i.test(detailText)) {
+      return false;
+    }
 
     // Don't auto-click if there are existing messages (shows "Reply" or "previous messages")
     if (detailText.includes("previous messages") || detailText.includes("Reply") ||

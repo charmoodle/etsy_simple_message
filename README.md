@@ -26,9 +26,10 @@ Chrome extension for faster Etsy customer message replies across two shops (char
 ### charmoodle
 | Product Group | Gift | Emoji |
 |---|---|---|
-| Digital Products Bundles (10M, 25M, 85M, Faceless Reels, Motherhood) | 500 Digital Products to Sell Ebook | strawberry |
-| Carousel Products (400+, Instagram, Stickers, Pink) | 500 Carousel Stickers | strawberry |
-| Marketing Bundles (DFY Vault, Course, Passive Income) | UGC Playbook | strawberry |
+| Small Bundles (10M, 25M, 85M, Faceless Reels, Motherhood) | 500 Digital Products to Sell Ebook | strawberry |
+| Carousel Products (400+, Instagram Templates, Pink) | 500 Carousel Stickers | strawberry |
+| Carousel Stickers (Instagram Trending Carousel Stickers) | 100 Reels Templates | strawberry |
+| Big Bundles (DFY Vault, Course, Passive Income) | UGC Playbook | strawberry |
 | Multiple items | UGC Playbook | strawberry |
 
 ### pearpebbears
@@ -41,21 +42,39 @@ Chrome extension for faster Etsy customer message replies across two shops (char
 
 ## Files
 
-- `manifest.json` — Chrome extension config, targets `etsy.com/messages/*`
-- `content.js` — Main logic: keyword matching, gift flow, panel UI, drag
-- `content.css` — Panel styling
-- `responses.js` — All response templates + product-to-gift mappings + Drive links
-- `background.js` — Claude Haiku API calls (fallback only)
+- `manifest.json` — Chrome extension config, targets 3 URL patterns
+- `content.js` — Message Assistant (orange): keyword matching, gift flow, panel UI, drag, teach/saved responses
+- `content.css` — Message Assistant styling
+- `review_request.js` / `review_request.css` — Review Request panel (green) for completed orders page
+- `gift_sender.js` / `gift_sender.css` — Gift Sender panel (purple) for shop reviews page
+- `responses.js` — All response templates + product-to-gift mappings + Drive links (shared across panels)
+- `background.js` — Claude Haiku API calls (fallback only, messages page)
 - `popup.html/js` — API key settings
 
 ## Status
 
-**v1.0 — Complete and functional.** Deployed to both Chrome profiles (charmoodle & pearpebbears). Handles message replies on `etsy.com/messages/*`.
+**v2.0 — Three-panel system.** Deployed to both Chrome profiles (charmoodle & pearpebbears).
+
+- **1. Message Assistant** (orange) on `etsy.com/messages/*` — reply to customer messages
+- **2. Review Request** (green) on `etsy.com/your/orders/sold/completed*` — ask buyers for reviews
+- **3. Gift Sender** (purple) on `etsy.com/shop/*` (Reviews tab) — send free gifts after reviews
+
+## Panels Overview
+
+| Panel | Page | Color | What it does |
+|---|---|---|---|
+| Message Assistant | `/messages/*` | Orange | Local keyword matching + Claude fallback + saved responses + teach new |
+| Review Request | `/your/orders/sold/completed*` | Green | Dropdown selector + auto-detect product + auto-click Message Buyer |
+| Gift Sender | `/shop/*` | Purple | Dropdown selector + auto-detect product from review/conversation |
+
+## User-Taught Responses
+
+Teach button (green) saves customer message → your reply pairs to `chrome.storage.local` (per shop). Auto-matches future similar messages via substring similarity (60% word overlap threshold). Export/Import JSON for backup or syncing between Chrome profiles.
 
 ## Next Steps
 
-- [ ] Build review request feature for completed orders page (`etsy.com/your/orders/sold/completed`)
-- [ ] Add the completed orders URL to manifest content_scripts
-- [ ] New UI for sending first-message review requests to buyers
 - [ ] Add "can't refund" as third Alt option on refund responses
-- [ ] Consider auto-detection improvements if Etsy DOM becomes inspectable
+- [ ] Bundle exported saved-responses JSON into `responses.js` permanently once tested
+- [ ] Improve auto-detect on pearpebbears for multi-item edge cases
+- [ ] Consider adding order age filter on review request (e.g. skip orders older than 60 days)
+- [ ] Add visual badges on the order list to flag ineligible orders (cancelled, guest, existing review) without needing to click each one

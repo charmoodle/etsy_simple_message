@@ -104,6 +104,21 @@
   line-height: 1.4;
 }
 
+/* Title badge - shows which template matched */
+.ema-title-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f56400;
+  background: #fff3e0;
+  padding: 5px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  display: inline-block;
+  max-width: 100%;
+  word-wrap: break-word;
+  line-height: 1.35;
+}
+
 /* Confidence badge */
 .ema-confidence {
   display: inline-block;
@@ -295,6 +310,22 @@
   background: #d95800;
 }
 
+#ema-teach-btn {
+  padding: 8px 12px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#ema-teach-btn:hover {
+  background: #c8e6c9;
+}
+
 /* Quick dropdown menu */
 #ema-quick-menu {
   position: relative;
@@ -349,6 +380,189 @@
 
 .ema-quick-option:not(:last-child) {
   border-bottom: 1px solid #eee;
+}
+
+.ema-quick-option.ema-manage-option {
+  background: #fff3e0;
+  color: #f56400;
+  font-weight: 500;
+  border-top: 2px solid #ffcc80;
+}
+
+.ema-quick-option.ema-manage-option:hover {
+  background: #ffe0b2;
+}
+
+.ema-quick-option.ema-divider {
+  border-top: 2px solid #f0f0f0;
+  margin-top: 4px;
+  color: #f56400;
+  font-weight: 500;
+}
+
+/* Teach form */
+.ema-teach-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ema-teach-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.ema-teach-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-top: 4px;
+}
+
+.ema-teach-form textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.ema-teach-form textarea:focus {
+  border-color: #f56400;
+}
+
+.ema-teach-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.ema-teach-actions button {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+#ema-teach-save {
+  background: #f56400;
+  color: #fff;
+}
+
+#ema-teach-save:hover {
+  background: #d95800;
+}
+
+#ema-teach-cancel {
+  background: #f0f0f0;
+  color: #444;
+}
+
+#ema-teach-cancel:hover {
+  background: #e0e0e0;
+}
+
+/* Saved responses list */
+.ema-saved-header {
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.ema-saved-empty {
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
+  padding: 12px 0;
+  text-align: center;
+}
+
+.ema-saved-list {
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+
+.ema-saved-item {
+  background: #f8f8f8;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  position: relative;
+}
+
+.ema-saved-customer {
+  color: #444;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.ema-saved-response {
+  color: #2e7d32;
+  line-height: 1.4;
+  padding-right: 50px;
+}
+
+.ema-saved-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 8px;
+  background: #fce4ec;
+  color: #c62828;
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.ema-saved-delete:hover {
+  background: #f8bbd0;
+}
+
+.ema-saved-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.ema-saved-actions button {
+  flex: 1;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+#ema-export-btn, #ema-import-btn {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+#ema-export-btn:hover, #ema-import-btn:hover {
+  background: #bbdefb;
+}
+
+#ema-saved-close {
+  background: #f0f0f0;
+  color: #444;
+}
+
+#ema-saved-close:hover {
+  background: #e0e0e0;
 }
 
 /* Result area */

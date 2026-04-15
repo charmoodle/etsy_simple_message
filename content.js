@@ -89,6 +89,7 @@
           <textarea id="ema-input" placeholder="Paste customer message here..." rows="2"></textarea>
           <div id="ema-btn-row">
             <button id="ema-go-btn">Get Response</button>
+            <button id="ema-teach-btn" title="Teach a new response">+ Teach</button>
             <div id="ema-quick-menu">
               <button id="ema-quick-btn">Quick ▾</button>
               <div id="ema-quick-dropdown">
@@ -97,6 +98,8 @@
                 <div class="ema-quick-option" data-action="noreview">No Review Reminder</div>
                 <div class="ema-quick-option" data-action="clicklink">Click Link in Screenshot</div>
                 <div class="ema-quick-option" data-action="sendgift">Send Gift</div>
+                <div class="ema-quick-option" data-action="askscreenshot">Ask for Screenshot</div>
+                <div class="ema-quick-option ema-manage-option" data-action="manage">Manage Saved Responses</div>
               </div>
             </div>
           </div>
@@ -119,6 +122,11 @@
       const input = document.getElementById("ema-input");
       const msg = input.value.trim();
       if (msg) submitMessage(msg);
+    });
+
+    // Handle teach button
+    document.getElementById("ema-teach-btn").addEventListener("click", () => {
+      showTeachForm();
     });
 
     // Quick dropdown toggle
@@ -152,6 +160,11 @@
             response: `Hi! I hope you're enjoying your order. Just a quick reminder — the free gift is sent after the 5-star review. You can leave it under your Etsy account → Purchases & Reviews → your order → Leave a Review. Once it's posted, let me know and I'll send your gift right away.`,
             confidence: "high", type: "template", matched_template: "no_review_reminder", note: null
           }, "");
+        }
+
+        if (action === "manage") {
+          showSavedList();
+          return;
         }
 
         if (action === "sendgift") {
@@ -198,6 +211,13 @@
               note: "Could not detect product. Make sure Order History is expanded."
             }, "");
           }
+        }
+
+        if (action === "askscreenshot") {
+          showSuggestion({
+            response: `Hi! Thanks for reaching out. Could you share a screenshot of the issue? It'll help me assist you much better. Thanks!`,
+            confidence: "high", type: "template", matched_template: "quick_ask_screenshot", note: null
+          }, "");
         }
 
         if (action === "clicklink") {
@@ -258,6 +278,61 @@
       if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         document.getElementById("ema-go-btn").click();
+      }
+    });
+  }
+
+  // ── SAVED RESPONSES (user-taught) ──
+  const STOPWORDS = new Set(["a","an","the","is","are","was","were","be","been","being","have","has","had","do","does","did","will","would","could","should","may","might","must","shall","can","to","of","in","on","at","by","for","with","about","as","into","from","but","or","and","if","then","so","not","no","i","my","me","you","your","we","our","they","their","he","she","it","this","that","these","those","there","here","what","which","who","when","where","how","why"]);
+
+  function tokenize(text) {
+    return text.toLowerCase()
+      .replace(/[\u2018\u2019\u2032]/g, "'")
+      .replace(/[\u201C\u201D\u2033]/g, '"')
+      .replace(/[^\w\s']/g, " ")
+      .split(/\s+/)
+      .filter(w => w.length > 2 && !STOPWORDS.has(w));
+  }
+
+  function similarity(newMsg, savedMsg) {
+    const a = new Set(tokenize(newMsg));
+    const b = tokenize(savedMsg);
+    if (b.length === 0) return 0;
+    let matched = 0;
+    for (const w of b) if (a.has(w)) matched++;
+    return matched / b.length;
+  }
+
+  function getSavedResponses(shopName, callback) {
+    chrome.storage.local.get(["savedResponses"], (data) => {
+      const all = data.savedResponses || {};
+      callback(all[shopName] || []);
+    });
+  }
+
+  function setSavedResponses(shopName, list, callback) {
+    chrome.storage.local.get(["savedResponses"], (data) => {
+      const all = data.savedResponses || {};
+      all[shopName] = list;
+      chrome.storage.local.set({ savedResponses: all }, callback);
+    });
+  }
+
+  function matchSavedResponse(msg, shopName, callback) {
+    getSavedResponses(shopName, (list) => {
+      let best = null, bestScore = 0;
+      for (const item of list) {
+        const score = similarity(msg, item.customerMessage);
+        if (score > bestScore) {
+          bestScore = score;
+          best = item;
+        }
+      }
+      // Threshold: 60% word overlap
+      if (best && bestScore >= 0.6) {
+        callback(best, bestScore);
+      } else {
+        callback(null, 0);
       }
     });
   }
@@ -546,6 +621,148 @@
     return null;
   }
 
+  // ── Teach form: save new customer message + response pair ──
+  function showTeachForm(prefillCustomer = "") {
+    const shopName = getShopName();
+    const resultArea = document.getElementById("ema-result-area");
+    const inputArea = document.getElementById("ema-input-area");
+    const prefill = prefillCustomer || document.getElementById("ema-input").value.trim();
+
+    // Hide the regular input area so we don't have two customer message boxes
+    if (inputArea) inputArea.style.display = "none";
+
+    resultArea.innerHTML = `
+      <div class="ema-teach-form">
+        <div class="ema-teach-title">Teach a new response for <b>${shopName}</b></div>
+        <label class="ema-teach-label">Customer message:</label>
+        <textarea id="ema-teach-customer" rows="3" placeholder="Paste the customer message...">${escapeHtml(prefill)}</textarea>
+        <label class="ema-teach-label">Your response:</label>
+        <textarea id="ema-teach-response" rows="4" placeholder="Type the response you want to save..."></textarea>
+        <div class="ema-teach-actions">
+          <button id="ema-teach-save">Save</button>
+          <button id="ema-teach-cancel">Cancel</button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("ema-teach-save").addEventListener("click", () => {
+      const customer = document.getElementById("ema-teach-customer").value.trim();
+      const response = document.getElementById("ema-teach-response").value.trim();
+      if (!customer || !response) {
+        alert("Please fill in both the customer message and your response.");
+        return;
+      }
+      getSavedResponses(shopName, (list) => {
+        list.push({
+          id: Date.now().toString(),
+          customerMessage: customer,
+          response: response,
+          created: new Date().toISOString()
+        });
+        setSavedResponses(shopName, list, () => {
+          if (inputArea) inputArea.style.display = "";
+          resultArea.innerHTML = `<div id="ema-empty" style="color:#2e7d32;">Saved! Will match future similar messages automatically.</div>`;
+        });
+      });
+    });
+
+    document.getElementById("ema-teach-cancel").addEventListener("click", () => {
+      if (inputArea) inputArea.style.display = "";
+      resultArea.innerHTML = `<div id="ema-empty">Paste customer message and click "Get Response"</div>`;
+    });
+  }
+
+  // ── Manage saved responses: list, delete, export, import ──
+  function showSavedList() {
+    const shopName = getShopName();
+    const resultArea = document.getElementById("ema-result-area");
+
+    getSavedResponses(shopName, (list) => {
+      let listHtml = "";
+      if (list.length === 0) {
+        listHtml = `<div class="ema-saved-empty">No saved responses yet. Use "Teach New Response" to add some.</div>`;
+      } else {
+        listHtml = list.map((item, idx) => `
+          <div class="ema-saved-item" data-id="${item.id}">
+            <div class="ema-saved-customer"><b>Customer:</b> ${escapeHtml(item.customerMessage.substring(0, 80))}${item.customerMessage.length > 80 ? "..." : ""}</div>
+            <div class="ema-saved-response"><b>Reply:</b> ${escapeHtml(item.response.substring(0, 100))}${item.response.length > 100 ? "..." : ""}</div>
+            <button class="ema-saved-delete" data-id="${item.id}">Delete</button>
+          </div>
+        `).join("");
+      }
+
+      resultArea.innerHTML = `
+        <div class="ema-saved-header">Saved responses for <b>${shopName}</b> (${list.length})</div>
+        <div class="ema-saved-list">${listHtml}</div>
+        <div class="ema-saved-actions">
+          <button id="ema-export-btn">Export JSON</button>
+          <button id="ema-import-btn">Import JSON</button>
+          <button id="ema-saved-close">Close</button>
+        </div>
+        <input type="file" id="ema-import-file" accept=".json" style="display:none;" />
+      `;
+
+      document.querySelectorAll(".ema-saved-delete").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          const id = btn.dataset.id;
+          getSavedResponses(shopName, (currentList) => {
+            const filtered = currentList.filter(x => x.id !== id);
+            setSavedResponses(shopName, filtered, showSavedList);
+          });
+        });
+      });
+
+      document.getElementById("ema-export-btn").addEventListener("click", () => {
+        chrome.storage.local.get(["savedResponses"], (data) => {
+          const blob = new Blob([JSON.stringify(data.savedResponses || {}, null, 2)], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `etsy-saved-responses-${new Date().toISOString().slice(0, 10)}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      });
+
+      document.getElementById("ema-import-btn").addEventListener("click", () => {
+        document.getElementById("ema-import-file").click();
+      });
+
+      document.getElementById("ema-import-file").addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const imported = JSON.parse(ev.target.result);
+            chrome.storage.local.get(["savedResponses"], (data) => {
+              const existing = data.savedResponses || {};
+              // Merge: existing + imported (imported wins on duplicate IDs)
+              for (const shop of Object.keys(imported)) {
+                const existingList = existing[shop] || [];
+                const importedList = imported[shop] || [];
+                const existingIds = new Set(existingList.map(x => x.id));
+                const merged = existingList.concat(importedList.filter(x => !existingIds.has(x.id)));
+                existing[shop] = merged;
+              }
+              chrome.storage.local.set({ savedResponses: existing }, () => {
+                alert("Imported successfully.");
+                showSavedList();
+              });
+            });
+          } catch (err) {
+            alert("Invalid JSON file.");
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      document.getElementById("ema-saved-close").addEventListener("click", () => {
+        resultArea.innerHTML = `<div id="ema-empty">Paste customer message and click "Get Response"</div>`;
+      });
+    });
+  }
+
   function matchTemplate(templateId) {
     const tmpl = RESPONSE_TEMPLATES.find(t => t.id === templateId);
     if (!tmpl) return null;
@@ -558,18 +775,37 @@
     };
   }
 
-  // ── Submit message — try local first, then API ──
+  // ── Submit message — try saved → local → API ──
   function submitMessage(customerMsg) {
     lastProcessedMessage = customerMsg;
 
     const shopName = getShopName();
 
-    // Try local matching first (FREE, instant)
-    const localResult = tryLocalMatch(customerMsg, shopName);
-    if (localResult) {
-      showSuggestion(localResult, customerMsg);
-      return;
-    }
+    // Try user-taught saved responses first (FREE, instant)
+    matchSavedResponse(customerMsg, shopName, (saved, score) => {
+      if (saved) {
+        showSuggestion({
+          response: saved.response,
+          confidence: "high",
+          type: "template",
+          matched_template: "saved_response",
+          note: `Matched your saved response (${Math.round(score * 100)}% match)`
+        }, customerMsg);
+        return;
+      }
+
+      // Try built-in local matching (FREE, instant)
+      const localResult = tryLocalMatch(customerMsg, shopName);
+      if (localResult) {
+        showSuggestion(localResult, customerMsg);
+        return;
+      }
+
+      askClaudeFallback(customerMsg, shopName);
+    });
+  }
+
+  function askClaudeFallback(customerMsg, shopName) {
 
     // No local match — ask user before using Claude API
     const resultArea = document.getElementById("ema-result-area");
@@ -654,14 +890,19 @@
   }
 
   function renderSuggestion(resultArea, suggestion, customerMsg) {
-    const { response, confidence, type, note, alternative } = suggestion;
+    const { response, confidence, type, note, alternative, matched_template } = suggestion;
 
-    const confidenceClass = confidence || "medium";
-    const typeLabel = type === "gift_first_message" ? "review request"
-      : type === "gift_send" ? "gift message"
-      : type === "template" ? "template match"
-      : type === "drive_link" ? "drive link"
-      : "custom";
+    // Build a readable title from the matched template
+    let title = "Custom";
+    if (matched_template) {
+      const tmpl = RESPONSE_TEMPLATES.find(t => t.id === matched_template);
+      if (tmpl && tmpl.description) {
+        title = tmpl.description;
+      } else {
+        // Format the template id: "ask_clarify" → "Ask Clarify"
+        title = matched_template.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      }
+    }
 
     let html = "";
 
@@ -669,8 +910,7 @@
       html += `<div id="ema-note">${escapeHtml(note)}</div>`;
     }
 
-    html += `<span class="ema-confidence ${confidenceClass}">${confidenceClass} confidence</span>`;
-    html += `<span class="ema-type-badge">${typeLabel}</span>`;
+    html += `<div class="ema-title-badge">${escapeHtml(title)}</div>`;
     html += `<div id="ema-response">${escapeHtml(response)}</div>`;
     html += `
       <div id="ema-actions">

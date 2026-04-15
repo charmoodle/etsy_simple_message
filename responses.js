@@ -418,19 +418,30 @@ const PRODUCT_GIFT_MAP = {
       products: [
         "400+ Faceless Instagram Carousel Templates",
         "Instagram Carousels Templates Bundle",
-        "Instagram Trending Carousel Stickers",
         "100+ Pink Instagram Carousel Templates"
       ],
-      keywords: ["carousel", "carousel sticker", "pink instagram"],
+      keywords: ["carousel template", "pink instagram", "faceless instagram carousel"],
       drive_links: {
         "400+ Faceless Instagram Carousel Templates": "https://drive.google.com/file/d/1zOaZm_B4P3N9kpzCmQGoli-5Ln7bXgZu/view?usp=sharing",
         "Instagram Carousels Templates Bundle": "https://drive.google.com/file/d/1-aw003BJCcbI0jI0cUS46ItUuHb7i4Or/view?usp=sharing",
-        "Instagram Trending Carousel Stickers": "https://drive.google.com/file/d/1u50Wr2269DQSWncHOZE6IX0H9N7pFnxj/view?usp=sharing",
         "100+ Pink Instagram Carousel Templates": "https://drive.google.com/file/d/1qFb3lXTRyTGnS8Duh2t0LrVQDlqmFcQk/view?usp=sharing"
       },
       first_message: `Hi there! Thank you so much for your order and for trusting my shop! If you enjoyed your purchase, I'd be so grateful if you could leave a 5-star review here — it really helps my shop grow!\n\nwww.etsy.com/your/purchases\n\nAs a thank-you, I'll send you the bonus FREE "500 Carousel Stickers" as a token of appreciation!`,
       gift_message: `Thank you so much for taking the time to write a review!\n\nHere is the link to download the FREE "500 Carousel Stickers" as a token of appreciation:\n\nhttps://digitalwealthsacademy.com/free?tab=stickers\n\nHave a wonderful day 🍓`,
       gift_name: "500 Carousel Stickers"
+    },
+    {
+      group: "carousel_stickers",
+      products: [
+        "Instagram Trending Carousel Stickers"
+      ],
+      keywords: ["carousel sticker", "trending carousel", "viral digital marketing canva pack"],
+      drive_links: {
+        "Instagram Trending Carousel Stickers": "https://drive.google.com/file/d/1u50Wr2269DQSWncHOZE6IX0H9N7pFnxj/view?usp=sharing"
+      },
+      first_message: `Hi there! Thank you so much for your order and for trusting my shop! If you enjoyed your purchase, I'd be so grateful if you could leave a 5-star review here — it really helps my shop grow!\n\nwww.etsy.com/your/purchases\n\nAs a thank-you, I'll send you a FREE "100 Reels Templates" as a token of appreciation!`,
+      gift_message: `Thank you so much for taking the time to write a review! Here is the canva link to your FREE 100 Reels Templates:\n\nhttps://www.canva.com/design/DAGBIPPnQmI/WasjBWbH0o_36lL3KYqr6g/view?utm_content=DAGBIPPnQmI&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink&mode=preview\n\nHave a wonderful day 🍓`,
+      gift_name: "100 Reels Templates"
     },
     {
       group: "big_bundles",

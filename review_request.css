@@ -69,6 +69,19 @@
   display: none;
 }
 
+/* Reminder */
+#ema-review-reminder {
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #2e7d32;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
 /* Product group selector */
 #ema-review-selector {
   margin-bottom: 10px;
