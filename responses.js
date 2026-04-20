@@ -468,7 +468,7 @@ const PRODUCT_GIFT_MAP = {
       group: "multiple_items",
       products: [],
       keywords: [],
-      first_message: `Hi there! Thank you so much for your order and for trusting my shop! If you enjoyed your purchase, I'd be so grateful if you could leave a 5-star review here — it really helps my shop grow!\n\nwww.etsy.com/your/purchases\n\nAs a thank-you, I'll send you a FREE "UGC Playbook" editable in Canva as a token of appreciation!`,
+      first_message: `Hi there! Thank you so much for your orders and for trusting my shop! If you enjoyed your purchase, I'd be so grateful if you could leave 5-star reviews here — it really helps my shop grow!\n\nwww.etsy.com/your/purchases\n\nAs a thank-you, I'll send you a FREE "UGC Playbook" editable in Canva as a token of appreciation!`,
       gift_message: `Thank you so much for taking the time to write a review! Here is the canva link to your FREE UGC Playbook:\n\nhttps://canva.link/obl5xnzf2btav5d\n\nHave a wonderful day 🍓`,
       gift_name: "UGC Playbook",
       is_multiple_items_fallback: true

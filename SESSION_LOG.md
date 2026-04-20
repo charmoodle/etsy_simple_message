@@ -158,3 +158,50 @@ Expanded from single Message Assistant to a three-panel color-coded system cover
 ### Git
 - Session commits: `adc6fa0` (review request + gift sender panels), `0f135cb` (Send Gift quick option)
 - Further uncommitted work: teach/saved responses, title badge, ask-for-screenshot, carousel_stickers split, guest checkout hard-blocking, reminders
+
+---
+
+## 2026-04-19: Wrap-up — Plural Gift Message, Wider Panels, Quick Dropdown Elongation
+
+### Summary
+Final polish pass before shelving active development. Fixed pluralization in the multi-item review request message, widened all three panels by ~10% so the Insert button no longer gets clipped, and restructured the Quick dropdown so it elongates to full panel width instead of forcing the user to scroll through a narrow 170px box.
+
+### Technical Breakdown
+
+**Active endpoints (post-change):**
+- `https://api.anthropic.com/v1/messages` — Claude Haiku fallback (model: `claude-haiku-4-5-20251001`), invoked only from `background.js` on user approval inside the Message Assistant panel. Header `anthropic-dangerous-direct-browser-access: true` still required.
+- `chrome.storage.local` (shape: `{ savedResponses: { charmoodle: [...], pearpebbears: [...] }, apiKey: "..." }`) — local persistence for user-taught response pairs and the Claude API key. No other storage keys in use.
+- `chrome.runtime.sendMessage` (intra-extension) — content script → background worker (`type: "GET_SUGGESTION"`).
+- No other remote endpoints, cron jobs, webhooks, or workers.
+
+**Active variables / constants:**
+- `RESPONSE_TEMPLATES` (`responses.js`) — ~40 template objects `{ id, category, description, template }`. Used by all three panels plus Claude system prompt.
+- `PRODUCT_GIFT_MAP` (`responses.js`) — two shops × N groups. Each group: `{ group, products[], keywords[], drive_links{}, first_message, gift_message, gift_name, is_multiple_items_fallback? }`. Only `charmoodle.multiple_items` sets `is_multiple_items_fallback: true`. Its `first_message` is now plural ("your orders", "leave 5-star reviews").
+- `STOPWORDS` (`content.js`) — 60+ word Set used by `tokenize()`.
+- Similarity match threshold: `0.6` — hardcoded in `matchSavedResponse()` (`content.js`).
+- Item count regex: `/(\d+)\s*items?/i` — used in both `content.js` (local match + Send Gift quick option) and `review_request.js:autoDetectGroup()`.
+- Guest checkout regex: `/\(Guest\)/i` — used in `review_request.js` (eligibility check + Insert hard-block + auto-click gate).
+- Review count regex: `Reviews\s+(\d+)` — used in `content.js:getReviewCount()`.
+- Receipt regex: `/Receipt\s*#(\d+)/` — used in `review_request.js` MutationObserver to detect order-switch.
+- Panel width: `315px` (bumped from `285px`) in `#ema-panel`, `#ema-review-panel`, `#ema-gift-panel`. Collapsed width unchanged at `180px`.
+- Quick dropdown anchor: moved from `#ema-quick-menu` (narrow, Quick-button-only) to `#ema-btn-row` (full button-row width) — dropdown positioned `left: 0; right: 0; top: calc(100% + 4px)`, `min-width` removed.
+
+**Behavioral deltas in this session:**
+- `responses.js:471` — multi-item first_message now plural.
+- `content.css`, `review_request.css`, `gift_sender.css` — panel width `285px → 315px`.
+- `content.css:#ema-btn-row` — added `position: relative` so it becomes the dropdown anchor.
+- `content.css:#ema-quick-menu` — removed `position: relative`.
+- `content.css:#ema-quick-dropdown` — `right: 0` + `min-width: 170px` replaced with `left: 0; right: 0` so it spans the full btn-row width.
+
+### Files Modified
+- `responses.js` — multi-item `first_message` pluralized
+- `content.css` — panel width, btn-row anchoring, quick dropdown full-width
+- `review_request.css` — panel width
+- `gift_sender.css` — panel width
+- `README.md` — Next Steps marked as wrap-up
+- `SESSION_LOG.md` — this entry
+
+### Left Off / Active State
+- **Wrapping up active development.** No pending work queue.
+- All three panels remain client-side only; the Claude endpoint is the sole outbound network call and it's approval-gated.
+- `pearpebbears` still has no `is_multiple_items_fallback` group — left as-is since shop has few multi-item orders.

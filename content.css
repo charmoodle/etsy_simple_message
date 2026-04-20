@@ -4,7 +4,7 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 285px;
+  width: 315px;
   max-height: 500px;
   background: #fff;
   border-radius: 12px;
@@ -291,6 +291,7 @@
   display: flex;
   gap: 6px;
   margin-top: 6px;
+  position: relative;
 }
 
 #ema-go-btn {
@@ -328,7 +329,7 @@
 
 /* Quick dropdown menu */
 #ema-quick-menu {
-  position: relative;
+  /* parent of dropdown is #ema-btn-row for full-width layout */
 }
 
 #ema-quick-btn {
@@ -350,14 +351,13 @@
 #ema-quick-dropdown {
   display: none;
   position: absolute;
-  top: 100%;
+  top: calc(100% + 4px);
+  left: 0;
   right: 0;
-  margin-top: 4px;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-  min-width: 170px;
   z-index: 100000;
   overflow: hidden;
 }

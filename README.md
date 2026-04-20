@@ -73,8 +73,10 @@ Teach button (green) saves customer message → your reply pairs to `chrome.stor
 
 ## Next Steps
 
-- [ ] Add "can't refund" as third Alt option on refund responses
-- [ ] Bundle exported saved-responses JSON into `responses.js` permanently once tested
-- [ ] Improve auto-detect on pearpebbears for multi-item edge cases
-- [ ] Consider adding order age filter on review request (e.g. skip orders older than 60 days)
-- [ ] Add visual badges on the order list to flag ineligible orders (cancelled, guest, existing review) without needing to click each one
+**Wrapping up.** Extension is feature-complete for current two-shop workflow. No active development planned; any follow-ups below are nice-to-haves only.
+
+- [ ] (future) Add "can't refund" as third Alt option on refund responses
+- [ ] (future) Bundle exported saved-responses JSON into `responses.js` permanently once tested
+- [ ] (future) Improve auto-detect on pearpebbears for multi-item edge cases
+- [ ] (future) Consider adding order age filter on review request (e.g. skip orders older than 60 days)
+- [ ] (future) Add visual badges on the order list to flag ineligible orders (cancelled, guest, existing review) without needing to click each one
